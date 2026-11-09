@@ -24,6 +24,10 @@ binary 用 `CGEventTap` 攔截系統按鍵事件，每次按鍵後禁用觸控�
 - `set-time.sh <秒數>` — 不重裝改延遲：`bootout` → `sed` 改 plist「第 3 個純數字 `<string>`」→ `bootstrap`。
 - `uninstall.sh` — `bootout` + 刪 plist 與 binary。
 
+plist 的 `Program` 與 `ProgramArguments[0]` 不是 binary 路徑，而是 `~/.local/share/touch-guard/觸控板防誤觸` 這個**符號連結**，指向 binary。原因是 launchd 執行的檔名會顯示在「登入項目與延伸功能 → App 背景活動」，直接跑 binary 只會顯示 `TouchGuard`，看不出用途。
+
+**不可改成 `#!/bin/sh` + `exec` 的包裝腳本**：實測這樣做程序照樣在跑，但輔助使用權限判定會失敗，打字時觸控板不會被擋（2026-11 踩過）。
+
 關鍵常數在三個腳本各自重複定義（`INSTALL_PATH` / `PLIST_PATH` / `LABEL` = `org.amanagr.TouchGuard.driver.Agent`），改路徑或 Label 要三處同步。
 
 ### binary 的命令列參數（plist 內固定寫死）

@@ -16,6 +16,7 @@ launchctl bootout "gui/$(id -u)/${LABEL}" 2>/dev/null || true
 echo "▶ 移除檔案..."
 rm -f "$PLIST_PATH"
 rm -f "$INSTALL_PATH"
+rm -rf "$HOME/.local/share/touch-guard"
 
 echo "✅ TouchGuard 已完全移除"
 echo "（輔助使用清單裡的殘留項可自行到系統設定移除）"

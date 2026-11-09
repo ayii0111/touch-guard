@@ -35,6 +35,8 @@ curl -fsSL https://raw.githubusercontent.com/ayii0111/touch-guard/main/install.s
 
 ⚠️ 權限要給的是 **TouchGuard binary 本身**，不是 Terminal。daemon 由系統直接啟動，跟 Terminal 無關。
 
+在「系統設定 → 一般 → 登入項目與延伸功能 → App 背景活動」中，本工具顯示為「**觸控板防誤觸**」。
+
 ---
 
 ## 調整延遲秒數

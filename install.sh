@@ -6,6 +6,9 @@ INSTALL_PATH="$HOME/.local/bin/TouchGuard"
 PLIST_PATH="$HOME/Library/LaunchAgents/org.amanagr.TouchGuard.driver.Agent.plist"
 LABEL="org.amanagr.TouchGuard.driver.Agent"
 LOG_PATH="$HOME/Library/Logs/TouchGuard.log"
+# launchd 執行的檔名會顯示在「登入項目與延伸功能 → App 背景活動」，所以用中文功能名稱的符號連結指向 binary
+# 不可用 sh 腳本 exec 包住：launchd 會把 /bin/sh 當成負責程序，輔助使用權限判定失敗，觸控板不會被擋
+LAUNCH_PATH="$HOME/.local/share/touch-guard/觸控板防誤觸"
 BINARY_URL="https://raw.githubusercontent.com/ayii0111/touch-guard/main/TouchGuard"
 TIME="${1:-1}"
 
@@ -20,6 +23,10 @@ curl -fsSL "$BINARY_URL" -o "$INSTALL_PATH"
 xattr -d com.apple.quarantine "$INSTALL_PATH" 2>/dev/null || true
 chmod +x "$INSTALL_PATH"
 
+mkdir -p "$(dirname "$LAUNCH_PATH")"
+rm -f "$LAUNCH_PATH"
+ln -s "$INSTALL_PATH" "$LAUNCH_PATH"
+
 echo "▶ 安裝 LaunchAgent（delay: ${TIME}s）..."
 cat > "$PLIST_PATH" << EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -33,10 +40,10 @@ cat > "$PLIST_PATH" << EOF
 	<key>KeepAlive</key>
 	<true/>
 	<key>Program</key>
-	<string>${INSTALL_PATH}</string>
+	<string>${LAUNCH_PATH}</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>${INSTALL_PATH}</string>
+		<string>${LAUNCH_PATH}</string>
 		<string>--startupDelay</string>
 		<string>1000000</string>
 		<string>--notificationDelay</string>
